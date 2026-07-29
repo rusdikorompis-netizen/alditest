@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplikasi Web Saya</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Supabase JS Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-100 p-8">
+
+  <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+    <h1 class="text-xl font-bold mb-4">Daftar Data</h1>
+    <ul id="data-list" class="space-y-2">
+      <li>Loading data...</li>
+    </ul>
+  </div>
+
+  <script>
+    // 1. Dapatkan URL & Anon Key dari Dashboard Supabase Anda:
+    // (Project Settings -> API)
+    const SUPABASE_URL = 'https://YOUR-PROJECT-ID.supabase.co';
+    const SUPABASE_KEY = 'YOUR-ANON-KEY';
+    
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // 2. Fungsi untuk mengambil data dari tabel 'penduduk'
+    async function loadData() {
+      const { data, error } = await supabase
+        .from('penduduk')
+        .select('*');
+
+      const listElement = document.getElementById('data-list');
+      listElement.innerHTML = '';
+
+      if (error) {
+        console.error(error);
+        listElement.innerHTML = '<li class="text-red-500">Gagal memuat data</li>';
+        return;
+      }
+
+      data.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'p-2 bg-gray-50 rounded border';
+        li.textContent = item.nama; // ganti 'nama' sesuai nama kolom Anda
+        listElement.appendChild(li);
+      });
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
